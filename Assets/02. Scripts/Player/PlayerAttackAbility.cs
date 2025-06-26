@@ -17,12 +17,10 @@ public class PlayerAttackAbility : MonoBehaviour
     private void Update()
     {
         _time += Time.deltaTime;
-        Debug.Log(_time);
         if (Input.GetMouseButtonDown(0) && _time >= CoolTime)
         {
             AnimationRandom();
             _time = 0f;
-            Debug.Log("타임 초기화!!!");
         }
     }
 
