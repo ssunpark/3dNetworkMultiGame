@@ -4,6 +4,7 @@ using UnityEngine;
 // Photon API 네임 스페이스
 using Photon.Pun;
 using Photon.Realtime;
+using Player = Photon.Realtime.Player;
 
 // 역할: 포톤 서버 관리자(서버 연결, 로비 입장, 방 입장, 게임 입장)
 public class PhotonServerManager : MonoBehaviourPunCallbacks
@@ -15,6 +16,11 @@ public class PhotonServerManager : MonoBehaviourPunCallbacks
     private void Start()
     {
         // 설정
+        // 0. 데이터 송수신 빈도를 매 초당 60회로 설정한다. (기본은 10)
+        PhotonNetwork.SendRate = 60; // 선호하는 값이지 보장은 안 함.
+        PhotonNetwork.SerializationRate = 60;
+        
+        
         // 1. 버전 : 버전이 다르면 다른 서버로 접속이 된다.
         PhotonNetwork.GameVersion = "0.0.1";
         // 2. 닉네임 : 게임에서 사용할 사용자의 별명(중복 가능 -> 판별을 위해서는 ActorID)
@@ -63,13 +69,15 @@ public class PhotonServerManager : MonoBehaviourPunCallbacks
         Debug.Log($"플레이어: {PhotonNetwork.CurrentRoom.PlayerCount}명");
         
         // 룸에 접속한 사용자 정보
-        Dictionary<int, Player> roomPlayers = PhotonNetwork.CurrentRoom.Players;
-        foreach (KeyValuePair<int, Player> player in roomPlayers)
+        Dictionary<int, Photon.Realtime.Player> roomPlayers = PhotonNetwork.CurrentRoom.Players;
+        foreach (KeyValuePair<int, Photon.Realtime.Player> player in roomPlayers)
         {
             Debug.Log($"{player.Value.NickName} : {player.Value.ActorNumber}");
             // ActorNumber는 Room 안에서의 플레이어에 대한 판별 ID. 들어온 순서대로 1-2-3 부여
             Debug.Log(player.Value.UserId); // 이게 진짜 고유 ID. 친구 기능, 귓속말 등등에 쓰인다.
         }
+        
+        PhotonNetwork.Instantiate("Player", Vector3.zero, Quaternion.identity);
     }
     
     // 랜덤 방 입장에 실패하면 호출되는 함수

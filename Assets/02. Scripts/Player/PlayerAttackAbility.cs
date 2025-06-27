@@ -1,6 +1,6 @@
 using UnityEngine;
-// 뿡
-public class PlayerAttackAbility : MonoBehaviour
+
+public class PlayerAttackAbility : PlayerAbility
 {
     public float CoolTime = 0.6f;
     private float _time = 0f;
@@ -16,9 +16,19 @@ public class PlayerAttackAbility : MonoBehaviour
 
     private void Update()
     {
+        if (_photonView.IsMine == false)
+        {
+            return;
+        }
+        
+        // 문제
+        // ability에서 다른 ability에 접근하는 효율적인 방법
+        // playermoveability의 CanMove 속성에 따라 공격 여부를 정하고 싶다.
+        // bool isMove = _owner.GetAbility<PlayerMoveAbility>().IsMove;
         _time += Time.deltaTime;
         if (Input.GetMouseButtonDown(0) && _time >= CoolTime)
         {
+            _owner.SetState(PlayerState.Attack);
             AnimationRandom();
             _time = 0f;
         }
