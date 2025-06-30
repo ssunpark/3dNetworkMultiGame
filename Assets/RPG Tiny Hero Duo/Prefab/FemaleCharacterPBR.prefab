@@ -2843,7 +2843,7 @@ MonoBehaviour:
     JumpPower: 2.5
     RotationPower: 100
     AttackSpeed: 1.2
-    MaxStamina: 500
+    MaxStamina: 100
     CurrentStamina: 0
     RunStamina: 10
     AttackStamina: 20
@@ -2974,16 +2974,16 @@ MonoBehaviour:
     SynchronizeType: 1
     Name: Move
   - Type: 9
-    SynchronizeType: 1
+    SynchronizeType: 0
     Name: Attack1
   - Type: 9
-    SynchronizeType: 1
+    SynchronizeType: 0
     Name: Attack2
   - Type: 9
-    SynchronizeType: 1
+    SynchronizeType: 0
     Name: Attack3
   - Type: 9
-    SynchronizeType: 0
+    SynchronizeType: 1
     Name: Run
   m_SynchronizeLayers:
   - SynchronizeType: 1

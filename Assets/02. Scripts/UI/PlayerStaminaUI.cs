@@ -7,6 +7,10 @@ public class PlayerStaminaUI : MonoBehaviour
     public Image FillImage;
     private Player _player;
     
+    public void SetPlayer(Player player)
+    {
+        _player = player;
+    }
 
     private void Update()
     {
@@ -18,5 +22,6 @@ public class PlayerStaminaUI : MonoBehaviour
         float ratio = _player.Stat.CurrentStamina / _player.Stat.MaxStamina;
         FillImage.fillAmount = ratio;
     }
+    
     
 }

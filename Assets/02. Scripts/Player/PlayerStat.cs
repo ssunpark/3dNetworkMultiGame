@@ -13,7 +13,7 @@ public class PlayerStat
     public float AttackSpeed = 1.2f;    // 초당 1.2번 공격할 수 있다.
 
     [Header("스테미너 변수")]
-    public float MaxStamina = 500f;
+    public float MaxStamina = 100f;
     public float CurrentStamina;
     public float RunStamina = 10f;
     public float AttackStamina = 20f;

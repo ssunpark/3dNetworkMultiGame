@@ -14,6 +14,7 @@ public class PlayerStaminaAbility : PlayerAbility
                 RecoverStamina();
                 break;
             case PlayerState.Walk:
+                RecoverStamina();
                 break;
             case PlayerState.Run:
                 ConsumeStamina(_owner.Stat.RunStamina);

@@ -61,13 +61,13 @@ public class PlayerMoveAbility : PlayerAbility, IPunObservable
         {
             _ySpeed = -1f;
 
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetKeyDown(KeyCode.Space) && (_owner.Stat.CurrentStamina >= _owner.Stat.JumpStamina))
             {
                 _owner.SetState(PlayerState.Jump);
                 _ySpeed = _owner.Stat.JumpPower;
             }
             
-            else if (Input.GetKey(KeyCode.LeftShift) && inputDir.magnitude > 0.1f)
+            else if (Input.GetKey(KeyCode.LeftShift) && (inputDir.magnitude > 0.1f) && (_owner.Stat.CurrentStamina > 0f))
             {
                 _owner.SetState(PlayerState.Run);
                 _characterController.Move(moveDir * _owner.Stat.RunSpeed * Time.deltaTime);
