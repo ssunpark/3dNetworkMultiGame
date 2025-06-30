@@ -14,6 +14,9 @@ public class PlayerHitAbility : PlayerAbility
     public void PlayerHitAnimation()
     {
         _animator.SetTrigger("GetHit");
-        
+        if (_photonView.IsMine)
+        {
+            CameraShaker.Instance.Shake();
+        }
     }
 }
