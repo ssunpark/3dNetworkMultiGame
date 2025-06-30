@@ -28,7 +28,7 @@ public class PlayerRotateAbility : PlayerAbility
     
     private void Update()
     {
-        if (_photonView.IsMine == false)
+        if (_photonView.IsMine == false || _owner.IsInputBlocked)
         {
             return;
         }

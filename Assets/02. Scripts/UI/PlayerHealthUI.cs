@@ -15,7 +15,6 @@ public class PlayerHealthUI : MonoBehaviour
     {
         if (_player == null) return;
         UpdateHealthUI();
-
     }
 
     public void UpdateHealthUI()

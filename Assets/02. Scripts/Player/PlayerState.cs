@@ -8,5 +8,6 @@ public enum PlayerState
     Walk,
     Run,
     Jump,
-    Attack
+    Attack,
+    Die
 }

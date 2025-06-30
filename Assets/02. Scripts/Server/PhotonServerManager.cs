@@ -9,10 +9,25 @@ using Player = Photon.Realtime.Player;
 // 역할: 포톤 서버 관리자(서버 연결, 로비 입장, 방 입장, 게임 입장)
 public class PhotonServerManager : MonoBehaviourPunCallbacks
 {
+    public static PhotonServerManager Instance;
     // MonoBehaviourPunCallbacks: 유니티 이벤트 말고도 PUN 서버 이벤트를 받을 수 있다.
     private readonly string _gameVersion = "1.0.0";
     private string _nickname = "Hesther";
     
+    public Transform[] SpawnPoints;
+    
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
     private void Start()
     {
         // 설정
@@ -77,7 +92,21 @@ public class PhotonServerManager : MonoBehaviourPunCallbacks
             Debug.Log(player.Value.UserId); // 이게 진짜 고유 ID. 친구 기능, 귓속말 등등에 쓰인다.
         }
         
-        PhotonNetwork.Instantiate("Player", Vector3.zero, Quaternion.identity);
+        SpawnPlayer();
+        // PhotonNetwork.Instantiate("Player", Vector3.zero, Quaternion.identity);
+        // Instantiate(PlayerPrefab, SpawnPoints[r].position, SpawnPoints[r].rotation);
+    }
+
+    public void SpawnPlayer()
+    {
+        int r = Random.Range(0, SpawnPoints.Length);
+        PhotonNetwork.Instantiate("Player", SpawnPoints[r].position, SpawnPoints[r].rotation);
+    }
+    
+    public void RespawnPlayer()
+    {
+        Debug.Log("플레이어 리스폰되는 중");
+        SpawnPlayer();
     }
     
     // 랜덤 방 입장에 실패하면 호출되는 함수

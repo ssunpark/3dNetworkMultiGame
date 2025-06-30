@@ -37,23 +37,34 @@ public class PlayerMoveAbility : PlayerAbility, IPunObservable
 
     private void Update()
     {
-        float h =  Input.GetAxis("Horizontal");
-        float v = Input.GetAxis("Vertical");
-        
-        if (_photonView.IsMine == false)
+        if (!_photonView.IsMine || _owner.IsInputBlocked)
         {
-            transform.position = Vector3.Lerp(transform.position, _receivedPosition, _ySpeed * Time.deltaTime);
-            transform.rotation = Quaternion.Slerp(transform.rotation, _receivedRotation, _ySpeed * Time.deltaTime);
+            SyncRemotePlayer();
             return;
         }
+
+        if (!_photonView.IsMine || _owner.IsInputBlocked) return;
+
+        HandleMovement();
+    }
+
+    private void SyncRemotePlayer()
+    {
+        transform.position = Vector3.Lerp(transform.position, _receivedPosition, _ySpeed * Time.deltaTime);
+        transform.rotation = Quaternion.Slerp(transform.rotation, _receivedRotation, _ySpeed * Time.deltaTime);
+    }
+
+    private void HandleMovement()
+    {
+        float h =  Input.GetAxis("Horizontal");
+        float v = Input.GetAxis("Vertical");
         
         Vector3 inputDir =  new Vector3(h, 0, v).normalized;
         Vector3 moveDir = transform.TransformDirection(inputDir);
 
         if (inputDir.magnitude > 0.1f)
         {
-            Quaternion targetRotation = Quaternion.LookRotation(moveDir);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, _owner.Stat.RotationSpeed * Time.deltaTime);
+            RotateTowards(moveDir);
         }
         
         
@@ -69,14 +80,14 @@ public class PlayerMoveAbility : PlayerAbility, IPunObservable
             
             else if (Input.GetKey(KeyCode.LeftShift) && (inputDir.magnitude > 0.1f) && (_owner.Stat.CurrentStamina > 0f))
             {
+                Move(moveDir, _owner.Stat.RunSpeed);
                 _owner.SetState(PlayerState.Run);
-                _characterController.Move(moveDir * _owner.Stat.RunSpeed * Time.deltaTime);
                 _animator.SetTrigger("Run");
             }
             else if (inputDir.magnitude > 0.1f)
             {
+                Move(moveDir, _owner.Stat.Movespeed);
                 _owner.SetState(PlayerState.Walk);
-                _characterController.Move(moveDir * _owner.Stat.Movespeed * Time.deltaTime);
             }
             else
             {
@@ -91,5 +102,17 @@ public class PlayerMoveAbility : PlayerAbility, IPunObservable
         moveDir.y = _ySpeed;
         _characterController.Move(moveDir * Time.deltaTime);
         _animator.SetFloat("Move", inputDir.magnitude);
+    }
+
+    private void Move(Vector3 direction, float speed)
+    {
+        _characterController.Move(direction * speed * Time.deltaTime);
+
+    }
+
+    private void RotateTowards(Vector3 direction)
+    {   
+        Quaternion targetRotation = Quaternion.LookRotation(direction);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, _owner.Stat.RotationSpeed * Time.deltaTime);
     }
 }

@@ -10,10 +10,15 @@ public class Player : MonoBehaviour, IDamaged
     public PlayerState State;
     
     public PlayerState CurrentState { get; private set; } = PlayerState.Idle;
+    public bool IsInputBlocked { get; private set; } = false;
+    public void BlockInput() => IsInputBlocked = true;
+    public void UnblockInput() => IsInputBlocked = false;
     
     private PhotonView _photonView;
 
     private Dictionary<Type, PlayerAbility> _abilitiesCache = new();
+    
+    private Animator _animator;
 
     private void Awake()
     {
@@ -28,6 +33,8 @@ public class Player : MonoBehaviour, IDamaged
 
     private void Start()
     {
+        _animator = GetComponent<Animator>();
+
         GameObject minimapCamObj = GameObject.FindWithTag("MinimapCamera");
         if (minimapCamObj != null)
         {
@@ -50,7 +57,7 @@ public class Player : MonoBehaviour, IDamaged
                     playerHealthUI.UpdateHealthUI();
                 }
             }
-            
+
             GameObject staminaBar = GameObject.FindGameObjectWithTag("StaminaBar");
             if (staminaBar != null)
             {
@@ -61,6 +68,12 @@ public class Player : MonoBehaviour, IDamaged
                     playerStaminaUI.UpdateStaminaUI();
                 }
             }
+            
+            PlayerHealthBarAbility playerHealthBarAbility = GetComponentInChildren<PlayerHealthBarAbility>();
+            if (playerHealthBarAbility != null)
+            {
+                playerHealthBarAbility.Refresh();
+            }
         }
     }
     
@@ -68,7 +81,15 @@ public class Player : MonoBehaviour, IDamaged
     public void Damaged(float damage)
     {
         Stat.CurrentHealth = Mathf.Max(0, Stat.CurrentHealth - damage);
+        GetAbility<PlayerHealthBarAbility>().Refresh();
         Debug.Log($"남은 체력: {Stat.CurrentHealth}");
+        
+        _photonView.RPC(nameof(PlayerHitAbility.PlayerHitAnimation), RpcTarget.All);
+        
+        if (Stat.CurrentHealth <= 0)
+        {
+            _photonView.RPC(nameof(PlayerDieAbility.PlayerDieAnimation), RpcTarget.All);
+        }
     }
 
     public T GetAbility<T>() where T : PlayerAbility
