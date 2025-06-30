@@ -4,12 +4,14 @@ using UnityEngine;
 using System;
 using NUnit.Framework.Constraints;
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour, IDamaged
 {
     public PlayerStat Stat;
     public PlayerState State;
     
     public PlayerState CurrentState { get; private set; } = PlayerState.Idle;
+    
+    private PhotonView _photonView;
 
     private Dictionary<Type, PlayerAbility> _abilitiesCache = new();
 
@@ -21,6 +23,7 @@ public class Player : MonoBehaviour
         {
             _abilitiesCache[ability.GetType()] = ability;
         }*/
+        _photonView = GetComponent<PhotonView>();
     }
 
     private void Start()
@@ -34,6 +37,38 @@ public class Player : MonoBehaviour
                 copyPosition.SetTarget(transform);
             }
         }
+
+        if (_photonView.IsMine == true)
+        {
+            GameObject helathBar = GameObject.FindGameObjectWithTag("HealthBar");
+            if (helathBar != null)
+            {
+                PlayerHealthUI playerHealthUI = helathBar.GetComponent<PlayerHealthUI>();
+                if (playerHealthUI != null)
+                {
+                    playerHealthUI.SetPlayer(this);
+                    playerHealthUI.UpdateHealthUI();
+                }
+            }
+            
+            GameObject staminaBar = GameObject.FindGameObjectWithTag("StaminaBar");
+            if (staminaBar != null)
+            {
+                PlayerStaminaUI playerStaminaUI = staminaBar.GetComponent<PlayerStaminaUI>();
+                if (playerStaminaUI != null)
+                {
+                    playerStaminaUI.SetPlayer(this);
+                    playerStaminaUI.UpdateStaminaUI();
+                }
+            }
+        }
+    }
+    
+    [PunRPC]
+    public void Damaged(float damage)
+    {
+        Stat.CurrentHealth = Mathf.Max(0, Stat.CurrentHealth - damage);
+        Debug.Log($"남은 체력: {Stat.CurrentHealth}");
     }
 
     public T GetAbility<T>() where T : PlayerAbility
@@ -64,4 +99,5 @@ public class Player : MonoBehaviour
         if (CurrentState == newState) return;
         CurrentState = newState;
     }
+
 }

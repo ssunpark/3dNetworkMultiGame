@@ -734,11 +734,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 97430892}
+  - component: {fileID: 97430895}
   - component: {fileID: 97430894}
   - component: {fileID: 97430893}
   m_Layer: 5
   m_Name: HealthBar
-  m_TagString: Untagged
+  m_TagString: HealthBar
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -801,6 +802,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 97430891}
   m_CullTransparentMesh: 1
+--- !u!114 &97430895
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 97430891}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 354f4f83131444548b411ceeb09bf324, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  FillImage: {fileID: 1456889135}
 --- !u!1001 &99528612
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -17390,8 +17404,8 @@ GameObject:
   - component: {fileID: 2114310048}
   - component: {fileID: 2114310047}
   m_Layer: 5
-  m_Name: StaminarBar
-  m_TagString: Untagged
+  m_Name: StaminaBar
+  m_TagString: StaminaBar
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

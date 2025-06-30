@@ -1,8 +1,7 @@
-using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerStaminaUI : MonoBehaviour
+public class PlayerHealthUI : MonoBehaviour
 {
     public Image FillImage;
     private Player _player;
@@ -15,15 +14,13 @@ public class PlayerStaminaUI : MonoBehaviour
     private void Update()
     {
         if (_player == null) return;
-        UpdateStaminaUI();
+        UpdateHealthUI();
 
     }
 
-    public void UpdateStaminaUI()
+    public void UpdateHealthUI()
     {
-        float ratio = _player.Stat.CurrentStamina / _player.Stat.MaxStamina;
+        float ratio = _player.Stat.CurrentHealth / _player.Stat.MaxHealth;
         FillImage.fillAmount = ratio;
     }
-    
-    
 }

@@ -1,5 +1,6 @@
 using Photon.Pun;
 using TMPro;
+using Unity.Cinemachine;
 using UnityEngine;
 
 public class PlayerAttackAbility : PlayerAbility
@@ -10,10 +11,13 @@ public class PlayerAttackAbility : PlayerAbility
     private Animator _animator;
     private string[] _attackStates = {"Attack1", "Attack2", "Attack3"};
 
+    public Collider WeaponCollider;
+
     private void Start()
     {
         _animator = GetComponent<Animator>();
         _time = 0f;
+        DeActiveCollider();
     }
 
     private void Update()
@@ -38,11 +42,37 @@ public class PlayerAttackAbility : PlayerAbility
         }
     }
 
+    public void ActiveCollider()
+    {
+        WeaponCollider.enabled = true;
+    }
+
+    public void DeActiveCollider()
+    {
+        WeaponCollider.enabled = false;
+    }
+
     [PunRPC]
     private void AttackAnimationRandom()
     {
         int randomIndex = Random.Range(0, _attackStates.Length);
         string triggerName = _attackStates[randomIndex];
         _animator.SetTrigger(triggerName);
+    }
+
+    public void Hit(Collider other)
+    {
+        if (_photonView.IsMine == false)
+        {
+            return;
+        }
+        
+        DeActiveCollider();
+        
+        // 데미지를 받는 오브젝트의 데미지 처리
+        if(other.GetComponent<IDamaged>() == null) return;
+        PhotonView otherPhotonView = other.GetComponent<PhotonView>();
+        otherPhotonView.RPC(nameof(Player.Damaged), RpcTarget.All, _owner.Stat.Damage);
+        
     }
 }

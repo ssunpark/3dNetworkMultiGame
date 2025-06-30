@@ -7,6 +7,9 @@ TagManager:
   - FollowCamera
   - MinimapCamera
   - Minimap
+  - Weapon
+  - HealthBar
+  - StaminaBar
   layers:
   - Default
   - TransparentFX
