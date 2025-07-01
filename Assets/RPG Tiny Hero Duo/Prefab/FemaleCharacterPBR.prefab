@@ -3073,6 +3073,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d8f35fea87c632418dce8a274cf3b93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  EffectParticlePrefab: {fileID: 5024009746357069194, guid: ec3f674830402cc45bce805cf6493db7, type: 3}
 --- !u!114 &4818325804987918202
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,24 +1,21 @@
+using System;
 using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
-using System;
-using NUnit.Framework.Constraints;
 
 public class Player : MonoBehaviour, IDamaged
 {
     public PlayerStat Stat;
     public PlayerState State;
-    
-    public PlayerState CurrentState { get; private set; } = PlayerState.Idle;
-    public bool IsInputBlocked { get; private set; } = false;
-    public void BlockInput() => IsInputBlocked = true;
-    public void UnblockInput() => IsInputBlocked = false;
-    
+
+    private readonly Dictionary<Type, PlayerAbility> _abilitiesCache = new();
+
+    private Animator _animator;
+
     private PhotonView _photonView;
 
-    private Dictionary<Type, PlayerAbility> _abilitiesCache = new();
-    
-    private Animator _animator;
+    public PlayerState CurrentState { get; private set; } = PlayerState.Idle;
+    public bool IsInputBlocked { get; private set; }
 
     private void Awake()
     {
@@ -35,22 +32,19 @@ public class Player : MonoBehaviour, IDamaged
     {
         _animator = GetComponent<Animator>();
 
-        GameObject minimapCamObj = GameObject.FindWithTag("MinimapCamera");
+        var minimapCamObj = GameObject.FindWithTag("MinimapCamera");
         if (minimapCamObj != null)
         {
-            CopyPosition copyPosition = minimapCamObj.GetComponent<CopyPosition>();
-            if (copyPosition != null)
-            {
-                copyPosition.SetTarget(transform);
-            }
+            var copyPosition = minimapCamObj.GetComponent<CopyPosition>();
+            if (copyPosition != null) copyPosition.SetTarget(transform);
         }
 
-        if (_photonView.IsMine == true)
+        if (_photonView.IsMine)
         {
-            GameObject helathBar = GameObject.FindGameObjectWithTag("HealthBar");
+            var helathBar = GameObject.FindGameObjectWithTag("HealthBar");
             if (helathBar != null)
             {
-                PlayerHealthUI playerHealthUI = helathBar.GetComponent<PlayerHealthUI>();
+                var playerHealthUI = helathBar.GetComponent<PlayerHealthUI>();
                 if (playerHealthUI != null)
                 {
                     playerHealthUI.SetPlayer(this);
@@ -58,48 +52,49 @@ public class Player : MonoBehaviour, IDamaged
                 }
             }
 
-            GameObject staminaBar = GameObject.FindGameObjectWithTag("StaminaBar");
+            var staminaBar = GameObject.FindGameObjectWithTag("StaminaBar");
             if (staminaBar != null)
             {
-                PlayerStaminaUI playerStaminaUI = staminaBar.GetComponent<PlayerStaminaUI>();
+                var playerStaminaUI = staminaBar.GetComponent<PlayerStaminaUI>();
                 if (playerStaminaUI != null)
                 {
                     playerStaminaUI.SetPlayer(this);
                     playerStaminaUI.UpdateStaminaUI();
                 }
             }
-            
-            PlayerHealthBarAbility playerHealthBarAbility = GetComponentInChildren<PlayerHealthBarAbility>();
-            if (playerHealthBarAbility != null)
-            {
-                playerHealthBarAbility.Refresh();
-            }
+
+            var playerHealthBarAbility = GetComponentInChildren<PlayerHealthBarAbility>();
+            if (playerHealthBarAbility != null) playerHealthBarAbility.Refresh();
         }
     }
-    
+
     [PunRPC]
     public void Damaged(float damage)
     {
         Stat.CurrentHealth = Mathf.Max(0, Stat.CurrentHealth - damage);
         GetAbility<PlayerHealthBarAbility>().Refresh();
-        Debug.Log($"남은 체력: {Stat.CurrentHealth}");
-        
+        // Debug.Log($"남은 체력: {Stat.CurrentHealth}");
+
         _photonView.RPC(nameof(PlayerHitAbility.PlayerHitAnimation), RpcTarget.All);
-        
-        if (Stat.CurrentHealth <= 0)
-        {
-            _photonView.RPC(nameof(PlayerDieAbility.PlayerDieAnimation), RpcTarget.All);
-        }
+
+        if (Stat.CurrentHealth <= 0) _photonView.RPC(nameof(PlayerDieAbility.PlayerDieAnimation), RpcTarget.All);
+    }
+
+    public void BlockInput()
+    {
+        IsInputBlocked = true;
+    }
+
+    public void UnblockInput()
+    {
+        IsInputBlocked = false;
     }
 
     public T GetAbility<T>() where T : PlayerAbility
     {
         var type = typeof(T);
 
-        if (_abilitiesCache.TryGetValue(type, out PlayerAbility ability))
-        {
-            return ability as T;
-        }
+        if (_abilitiesCache.TryGetValue(type, out var ability)) return ability as T;
 
         // 게으른 초기화/로딩 -> 처음에 곧바로 초기화/로딩을 하는게 아니라
         //                    필요할때만 하는.. 뒤로 미루는 기법
@@ -111,7 +106,7 @@ public class Player : MonoBehaviour, IDamaged
 
             return ability as T;
         }
-        
+
         throw new Exception($"어빌리티 {type.Name}을 {gameObject.name}에서 찾을 수 없습니다.");
     }
 
@@ -120,5 +115,4 @@ public class Player : MonoBehaviour, IDamaged
         if (CurrentState == newState) return;
         CurrentState = newState;
     }
-
 }
