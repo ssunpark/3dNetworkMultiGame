@@ -1,7 +1,4 @@
-using UnityEngine;
-
 public interface IDamaged
 {
-    void Damaged(float damage);
-    
+    void Damaged(float damage, int actorNumber);
 }

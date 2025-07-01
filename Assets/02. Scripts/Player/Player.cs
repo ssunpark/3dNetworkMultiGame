@@ -69,7 +69,7 @@ public class Player : MonoBehaviour, IDamaged
     }
 
     [PunRPC]
-    public void Damaged(float damage)
+    public void Damaged(float damage, int actorNumber)
     {
         Stat.CurrentHealth = Mathf.Max(0, Stat.CurrentHealth - damage);
         GetAbility<PlayerHealthBarAbility>().Refresh();
@@ -77,7 +77,11 @@ public class Player : MonoBehaviour, IDamaged
 
         _photonView.RPC(nameof(PlayerHitAbility.PlayerHitAnimation), RpcTarget.All);
 
-        if (Stat.CurrentHealth <= 0) _photonView.RPC(nameof(PlayerDieAbility.PlayerDieAnimation), RpcTarget.All);
+        if (Stat.CurrentHealth <= 0)
+        {
+            _photonView.RPC(nameof(PlayerDieAbility.PlayerDieAnimation), RpcTarget.All);
+            RoomManager.Instance.OnPlayerDeath(_photonView.Owner.ActorNumber, actorNumber);
+        }
     }
 
     public void BlockInput()
