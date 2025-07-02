@@ -5,13 +5,33 @@ using UnityEngine;
 [RequireComponent(typeof(PhotonView))]
 public class ItemObjectFactory : MonoBehaviourPun
 {
+
+    public Transform[] ItemSpawnPoints;
+    private readonly float _spawnTime = 10f;
     private PhotonView _photonView;
-    public static ItemObjectFactory Instance { get; private set; }
+    private float _timer;
+    private static ItemObjectFactory _instance;
+    public static ItemObjectFactory Instance => _instance;
 
     private void Awake()
     {
-        Instance = this;
+        _instance = this;
         _photonView = GetComponent<PhotonView>();
+    }
+
+    private void Start()
+    {
+        _timer = 0f;
+    }
+
+    private void Update()
+    {
+        _timer += Time.deltaTime;
+        if (_timer >= _spawnTime)
+        {
+            StoneItemSpawn();
+            _timer = 0;
+        }
     }
 
     public void RequestCreate(EItemType itemType, Vector3 dropPosition)
@@ -56,5 +76,11 @@ public class ItemObjectFactory : MonoBehaviourPun
         }
 
         PhotonNetwork.Destroy(objectToDelete);
+    }
+
+    private void StoneItemSpawn()
+    {
+        int r = Random.Range(0, ItemSpawnPoints.Length);
+        PhotonNetwork.Instantiate("ScoreItem", ItemSpawnPoints[r].position, ItemSpawnPoints[r].rotation);
     }
 }
