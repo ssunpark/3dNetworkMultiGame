@@ -2,13 +2,14 @@ using System;
 using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class Player : MonoBehaviour, IDamaged
 {
     public PlayerStat Stat;
     public PlayerState State;
 
-    private readonly Dictionary<Type, PlayerAbility> _abilitiesCache = new();
+    private readonly Dictionary<Type, PlayerAbility> _abilitiesCache = new Dictionary<Type, PlayerAbility>();
 
     private Animator _animator;
 
@@ -32,19 +33,22 @@ public class Player : MonoBehaviour, IDamaged
     {
         _animator = GetComponent<Animator>();
 
-        var minimapCamObj = GameObject.FindWithTag("MinimapCamera");
+        GameObject minimapCamObj = GameObject.FindWithTag("MinimapCamera");
         if (minimapCamObj != null)
         {
-            var copyPosition = minimapCamObj.GetComponent<CopyPosition>();
-            if (copyPosition != null) copyPosition.SetTarget(transform);
+            CopyPosition copyPosition = minimapCamObj.GetComponent<CopyPosition>();
+            if (copyPosition != null)
+            {
+                copyPosition.SetTarget(transform);
+            }
         }
 
         if (_photonView.IsMine)
         {
-            var helathBar = GameObject.FindGameObjectWithTag("HealthBar");
+            GameObject helathBar = GameObject.FindGameObjectWithTag("HealthBar");
             if (helathBar != null)
             {
-                var playerHealthUI = helathBar.GetComponent<PlayerHealthUI>();
+                PlayerHealthUI playerHealthUI = helathBar.GetComponent<PlayerHealthUI>();
                 if (playerHealthUI != null)
                 {
                     playerHealthUI.SetPlayer(this);
@@ -52,10 +56,10 @@ public class Player : MonoBehaviour, IDamaged
                 }
             }
 
-            var staminaBar = GameObject.FindGameObjectWithTag("StaminaBar");
+            GameObject staminaBar = GameObject.FindGameObjectWithTag("StaminaBar");
             if (staminaBar != null)
             {
-                var playerStaminaUI = staminaBar.GetComponent<PlayerStaminaUI>();
+                PlayerStaminaUI playerStaminaUI = staminaBar.GetComponent<PlayerStaminaUI>();
                 if (playerStaminaUI != null)
                 {
                     playerStaminaUI.SetPlayer(this);
@@ -63,8 +67,11 @@ public class Player : MonoBehaviour, IDamaged
                 }
             }
 
-            var playerHealthBarAbility = GetComponentInChildren<PlayerHealthBarAbility>();
-            if (playerHealthBarAbility != null) playerHealthBarAbility.Refresh();
+            PlayerHealthBarAbility playerHealthBarAbility = GetComponentInChildren<PlayerHealthBarAbility>();
+            if (playerHealthBarAbility != null)
+            {
+                playerHealthBarAbility.Refresh();
+            }
         }
     }
 
@@ -79,8 +86,40 @@ public class Player : MonoBehaviour, IDamaged
 
         if (Stat.CurrentHealth <= 0)
         {
-            _photonView.RPC(nameof(PlayerDieAbility.PlayerDieAnimation), RpcTarget.All);
             RoomManager.Instance.OnPlayerDeath(_photonView.Owner.ActorNumber, actorNumber);
+            if (_photonView.IsMine)
+            {
+                _photonView.RPC(nameof(PlayerDieAbility.PlayerDieAnimation), RpcTarget.All);
+            }
+
+            if (_photonView.IsMine)
+            {
+                MakeScoreItems(Random.Range(1, 4));
+                MakeStatItems();
+            }
+        }
+    }
+
+    private void MakeScoreItems(int count)
+    {
+        for (int i = 0; i < count; ++i)
+        {
+            // 포톤의 네트워크 객체의 생명 주기
+            // Player : 플레이어가 생성하고, 플레이어가 나가면 자동 삭제(PhotonNetwork.Instantiate/Destroy)
+            // Room : 룸이 생성하고, 룸이 없어지면 삭제.. (PhotonNetwork.InstantiateRoomObject/Destroy)
+            ItemObjectFactory.Instance.RequestCreate(EItemType.Score, transform.position + new Vector3(0, 2, 0));
+        }
+    }
+
+    private void MakeStatItems()
+    {
+        if (Random.value < 0.3f)
+        {
+            ItemObjectFactory.Instance.RequestCreate(EItemType.Stamina, transform.position + new Vector3(0, 0.5f, 0));
+        }
+        if (Random.value < 0.2)
+        {
+            ItemObjectFactory.Instance.RequestCreate(EItemType.Health, transform.position + new Vector3(0, 0.5f, 0));
         }
     }
 
@@ -96,9 +135,12 @@ public class Player : MonoBehaviour, IDamaged
 
     public T GetAbility<T>() where T : PlayerAbility
     {
-        var type = typeof(T);
+        Type type = typeof(T);
 
-        if (_abilitiesCache.TryGetValue(type, out var ability)) return ability as T;
+        if (_abilitiesCache.TryGetValue(type, out PlayerAbility ability))
+        {
+            return ability as T;
+        }
 
         // 게으른 초기화/로딩 -> 처음에 곧바로 초기화/로딩을 하는게 아니라
         //                    필요할때만 하는.. 뒤로 미루는 기법
@@ -116,7 +158,11 @@ public class Player : MonoBehaviour, IDamaged
 
     public void SetState(PlayerState newState)
     {
-        if (CurrentState == newState) return;
+        if (CurrentState == newState)
+        {
+            return;
+        }
+
         CurrentState = newState;
     }
 }

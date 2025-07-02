@@ -37,7 +37,7 @@ public class UI_RoomLog : MonoBehaviour
     public void PlayerDeathLog(string playerName, string attackerName)
     {
         _logMessage +=
-            $"\n<color=#FF1493>{attackerName}</color>님이 <color=#FFA5000>{playerName}</color>님을 <color=red>처치</color>했습니다.";
+            $"\n<color=#FF1493>{attackerName}</color>님이 <color=#FF8C00>{playerName}</color>님을 <color=red>처치</color>했습니다.";
         Refresh();
     }
 }

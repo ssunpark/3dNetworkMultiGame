@@ -2995,7 +2995,7 @@ MonoBehaviour:
     Movespeed: 5
     RunSpeed: 10
     RotationSpeed: 2.5
-    JumpPower: 2.5
+    JumpPower: 8
     RotationPower: 100
     AttackSpeed: 1.2
     Damage: 20
@@ -3007,6 +3007,7 @@ MonoBehaviour:
     AttackStamina: 20
     JumpStamina: 10
     StaminRecovery: 20
+    Score: 0
   State: 0
 --- !u!114 &2371179040041732898
 MonoBehaviour:
@@ -3033,7 +3034,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c6eaf8247324ab40a5df7464759a71a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Gravity: -5
+  Gravity: -25
 --- !u!114 &4448262470552944404
 MonoBehaviour:
   m_ObjectHideFlags: 0

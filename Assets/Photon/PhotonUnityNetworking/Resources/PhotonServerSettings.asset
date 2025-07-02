@@ -44,6 +44,10 @@ MonoBehaviour:
   - PlayerDieAnimation
   - PlayerHitAnimation
   - AllHitAnimation
+  - Create
+  - Delete
+  - RequestCreate
+  - RequestDelete
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

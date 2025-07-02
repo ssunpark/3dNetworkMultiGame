@@ -1,14 +1,15 @@
 using System.Collections;
 using Photon.Pun;
 using UnityEngine;
-
 public class PlayerDieAbility : PlayerAbility
 {
     private Animator _animator;
+    private CharacterController _characterController;
 
     private void Start()
     {
         _animator = GetComponent<Animator>();
+        _characterController = GetComponent<CharacterController>();
     }
 
     [PunRPC]
@@ -21,7 +22,7 @@ public class PlayerDieAbility : PlayerAbility
         {
             _owner.BlockInput();
         }
-
+        _characterController.enabled = false;
         StartCoroutine(PlayerRespawnCoroutine());
     }
 
