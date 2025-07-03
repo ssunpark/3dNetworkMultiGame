@@ -14,8 +14,8 @@ public class ScoreItemObject : MonoBehaviourPun
             Player player = other.GetComponent<Player>();
             if (player != null)
             {
-                player.Stat.Score += 10;
-                Debug.Log($"{player.Stat.Score}");
+                ScoreManager.Instance.AddScore(10);
+                Debug.Log($"{ScoreManager.Instance.Score}");
 
                 ItemObjectFactory.Instance.RequestDelete(photonView.ViewID);
             }

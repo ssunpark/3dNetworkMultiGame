@@ -73,6 +73,16 @@ public class Player : MonoBehaviour, IDamaged
                 playerHealthBarAbility.Refresh();
             }
         }
+        
+        GameObject Bear =  GameObject.FindGameObjectWithTag("Bear");
+        if (Bear != null)
+        {
+            BearFSM bearFSM = Bear.GetComponent<BearFSM>();
+            if (bearFSM != null)
+            {
+                bearFSM.SetTarget(transform);
+            }
+        }
     }
 
     [PunRPC]

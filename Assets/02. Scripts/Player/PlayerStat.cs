@@ -26,6 +26,6 @@ public class PlayerStat
     public float JumpStamina = 10f;
     public float StaminRecovery = 20f;
 
-    [Header("기타 변수")]
-    public int Score;
+    // [Header("기타 변수")]
+    // // public int Score;
 }
