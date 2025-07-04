@@ -1327,7 +1327,7 @@ GameObject:
   m_Component:
   - component: {fileID: 107979580}
   m_Layer: 0
-  m_Name: SpawnPoint
+  m_Name: SpawnPoints
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -17680,37 +17680,16 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1916608162}
-  - component: {fileID: 1916608161}
   - component: {fileID: 1916608163}
   - component: {fileID: 1916608165}
   - component: {fileID: 1916608164}
   m_Layer: 0
-  m_Name: ServerManager
+  m_Name: Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1916608161
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1916608160}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eac77c6e6bebd954fb6f590a7596c40e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  SpawnPoints:
-  - {fileID: 1615841278}
-  - {fileID: 1847225390}
-  - {fileID: 1397809916}
-  - {fileID: 1371117033}
-  - {fileID: 708087279}
-  - {fileID: 1898552288}
-  - {fileID: 1448773171}
 --- !u!4 &1916608162
 Transform:
   m_ObjectHideFlags: 0

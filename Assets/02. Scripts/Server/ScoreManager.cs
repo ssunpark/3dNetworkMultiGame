@@ -26,7 +26,7 @@ public class ScoreManager : MonoBehaviourPunCallbacks
     private int _scoreAmount = 0;
     public int Score => _scoreAmount;
     
-    public override void OnJoinedRoom()
+    public void Start()
     {
         Refresh();
     }
