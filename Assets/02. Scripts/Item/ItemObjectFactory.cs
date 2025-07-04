@@ -29,7 +29,10 @@ public class ItemObjectFactory : MonoBehaviourPun
         _timer += Time.deltaTime;
         if (_timer >= _spawnTime)
         {
-            StoneItemSpawn();
+            if (PhotonNetwork.IsMasterClient)
+            {
+                StoneItemSpawn();
+            }
             _timer = 0;
         }
     }
@@ -81,6 +84,6 @@ public class ItemObjectFactory : MonoBehaviourPun
     private void StoneItemSpawn()
     {
         int r = Random.Range(0, ItemSpawnPoints.Length);
-        PhotonNetwork.Instantiate("ScoreItem", ItemSpawnPoints[r].position, ItemSpawnPoints[r].rotation);
+        PhotonNetwork.InstantiateRoomObject("ScoreItem", ItemSpawnPoints[r].position, ItemSpawnPoints[r].rotation);
     }
 }

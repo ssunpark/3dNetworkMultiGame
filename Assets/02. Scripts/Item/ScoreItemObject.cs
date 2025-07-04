@@ -14,10 +14,13 @@ public class ScoreItemObject : MonoBehaviourPun
             Player player = other.GetComponent<Player>();
             if (player != null)
             {
-                ScoreManager.Instance.AddScore(10);
-                Debug.Log($"{ScoreManager.Instance.Score}");
+                if (player.GetComponent<PhotonView>().IsMine)
+                {
+                    ScoreManager.Instance.AddScore(10);
+                    Debug.Log($"{ScoreManager.Instance.Score}");
 
-                ItemObjectFactory.Instance.RequestDelete(photonView.ViewID);
+                    ItemObjectFactory.Instance.RequestDelete(photonView.ViewID);
+                }
             }
         }
     }

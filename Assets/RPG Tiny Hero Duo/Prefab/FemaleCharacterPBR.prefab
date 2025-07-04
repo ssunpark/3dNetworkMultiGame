@@ -3007,7 +3007,6 @@ MonoBehaviour:
     AttackStamina: 20
     JumpStamina: 10
     StaminRecovery: 20
-    Score: 0
   State: 0
 --- !u!114 &2371179040041732898
 MonoBehaviour:

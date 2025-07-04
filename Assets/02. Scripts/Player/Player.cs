@@ -100,14 +100,18 @@ public class Player : MonoBehaviour, IDamaged
             if (_photonView.IsMine)
             {
                 _photonView.RPC(nameof(PlayerDieAbility.PlayerDieAnimation), RpcTarget.All);
-            }
-
-            if (_photonView.IsMine)
-            {
+                var actorPlayer = PhotonNetwork.CurrentRoom.GetPlayer(actorNumber);
+                _photonView.RPC(nameof(RequestAddkillCount), actorPlayer);
                 MakeScoreItems(Random.Range(1, 4));
                 MakeStatItems();
             }
         }
+    }
+
+    [PunRPC]
+    public void RequestAddkillCount()
+    {
+        ScoreManager.Instance.AddKillCount();
     }
 
     private void MakeScoreItems(int count)

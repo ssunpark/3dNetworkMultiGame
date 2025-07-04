@@ -145,10 +145,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7191186882863222203}
+  - component: {fileID: 2278462539703518357}
   - component: {fileID: 562209538102324990}
   - component: {fileID: 2121241155577041047}
   - component: {fileID: 8417056946605846475}
-  - component: {fileID: 2278462539703518357}
   m_Layer: 5
   m_Name: UI_ScoreSlot
   m_TagString: Untagged
@@ -178,6 +178,21 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 550, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &2278462539703518357
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2992531625775048966}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d042d87c389846a4aacc4d961bea4f31, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  RankTextUI: {fileID: 7389111489268108973}
+  NicknameTextUI: {fileID: 3733657201843577984}
+  ScoreTextUI: {fileID: 2794614427885542136}
 --- !u!222 &562209538102324990
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -242,21 +257,6 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!114 &2278462539703518357
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2992531625775048966}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d042d87c389846a4aacc4d961bea4f31, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  RankTextUI: {fileID: 7389111489268108973}
-  NicknameTextUI: {fileID: 3733657201843577984}
-  ScoreTextUI: {fileID: 2794614427885542136}
 --- !u!1 &3792102949263980097
 GameObject:
   m_ObjectHideFlags: 0

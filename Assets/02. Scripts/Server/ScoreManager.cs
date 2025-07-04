@@ -6,6 +6,8 @@ using UnityEngine;
 
 public class ScoreManager : MonoBehaviourPunCallbacks
 {
+    private int _killCount = 0;
+    
     public static ScoreManager Instance
     {
         get; private set;
@@ -21,8 +23,8 @@ public class ScoreManager : MonoBehaviourPunCallbacks
     
     public event Action OnDataChanged;
 
-    private int _score = 0;
-    public int Score => _score;
+    private int _scoreAmount = 0;
+    public int Score => _scoreAmount;
     
     public override void OnJoinedRoom()
     {
@@ -33,20 +35,28 @@ public class ScoreManager : MonoBehaviourPunCallbacks
     public void Refresh()
     {
         Hashtable hashTable = new Hashtable();
-        hashTable.Add("Score", _score);
+        hashTable.Add("Score", _killCount*5000+_scoreAmount); //_score
         
         PhotonNetwork.LocalPlayer.SetCustomProperties(hashTable);
+    }
+
+    [PunRPC]
+    public void AddKillCount()
+    {
+        _killCount += 1;
+        Refresh();
     }
     
     public void AddScore(int addScore)
     {
-        _score += addScore;
+        _scoreAmount += addScore;
         Refresh();
     }
 
     // 플레이어의 커스텀 프로퍼티가 변경되면 호출되는 콜백 함수
     public override void OnPlayerPropertiesUpdate(Photon.Realtime.Player targetPlayer, Hashtable hashtable)
     {
+        _scores.Clear();
         //Debug.Log($"Player {targetPlayer.NickName}_{targetPlayer.ActorNumber}의 점수: {hashtable["Score"]}");
 
         var roomPlayers = PhotonNetwork.PlayerList;
